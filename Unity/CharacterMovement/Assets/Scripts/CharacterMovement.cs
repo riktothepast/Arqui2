@@ -6,6 +6,8 @@ public class CharacterMovement : MonoBehaviour {
     public float jumpSpeed;
     bool grounded;
     Vector2 movement;
+    public int jumps;
+    int currentJumps;
 	// Use this for initialization
 	void Start () {
 	    
@@ -23,17 +25,29 @@ public class CharacterMovement : MonoBehaviour {
             transform.localScale = new Vector3(1, 1, 1);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && grounded) {
+        if (Input.GetKeyDown(KeyCode.Space) && grounded && currentJumps>0)
+        {
+            currentJumps--;
             rigidbody2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
         }
 
         rigidbody2D.velocity = new Vector2( move * movementSpeed, rigidbody2D.velocity.y);
 	}
 
+    public void Jump()
+    {
+        if (grounded && currentJumps > 0)
+        {
+            currentJumps--;
+            rigidbody2D.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D col) {
 
         if (col.tag.Equals("Platform")) {
             grounded = true;
+            currentJumps = jumps;
         }
     }
 
@@ -42,7 +56,6 @@ public class CharacterMovement : MonoBehaviour {
 
         if (col.tag.Equals("Platform"))
         {
-            grounded = false;
         }
     }
 }
